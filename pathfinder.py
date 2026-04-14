@@ -114,31 +114,35 @@ def print_path(grid, path):
 
 
 def step_cost(grid, current, successor):
+    #gets coordinates
     current_row, current_col = current
     successor_row, successor_col = successor
 
+    #gets elevation values
     current_height = grid[current_row][current_col]
     successor_height = grid[successor_row][successor_col]
 
     return 1 + max(0, successor_height - current_height)
 
 def ucs(grid, start, goal):
-    pq = []
+    pq = [] #priority queue 
     visited = set()
     best_cost = {}
 
     start_node = {
         "state": start,
         "parent": None,
-        "g": 0
+        "path_cost": 0
     }
 
+    #add start node to heap and set start cost to 0
     heapq.heappush(pq, (0, start, start_node))
     best_cost[start] = 0
 
     while pq:
-        current_cost, current_state, current_node = heapq.heappop(pq)
+        current_cost, current_state, current_node = heapq.heappop(pq) #removes lowest cost node
         
+        #skip if node is already visited
         if current_state in visited:
             continue
 
@@ -148,14 +152,14 @@ def ucs(grid, start, goal):
         visited.add(current_state)
 
         for successor in get_successors(current_state, grid):
-            new_cost = current_node["g"] + step_cost(grid, current_state, successor)
+            new_cost = current_node["path_cost"] + step_cost(grid, current_state, successor)
             
             if successor not in best_cost or new_cost < best_cost[successor]:
                 best_cost[successor] = new_cost
                 child_node = {
                     "state": successor,
                     "parent": current_node,
-                    "g": new_cost
+                    "path_cost": new_cost
                 }
 
                 heapq.heappush(pq, (new_cost, successor, child_node))
