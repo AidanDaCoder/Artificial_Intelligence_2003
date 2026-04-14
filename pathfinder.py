@@ -128,6 +128,7 @@ def ucs(grid, start, goal):
     pq = [] #priority queue 
     #visited = set()
     best_cost = {}
+    insertion_order = 0
 
     start_node = {
         "state": start,
@@ -136,12 +137,13 @@ def ucs(grid, start, goal):
     }
 
     #add start node to heap and set start cost to 0
-    heapq.heappush(pq, (0, start, start_node))
+    heapq.heappush(pq, (0, insertion_order, start_node))
     best_cost[start] = 0
 
     while pq:
-        current_cost, current_state, current_node = heapq.heappop(pq) #removes lowest cost node
-        
+        current_cost, insertion_order, current_node = heapq.heappop(pq) #removes lowest cost node
+        current_state = current_node["state"]
+
         if current_cost > best_cost[current_state]:
             continue
 
@@ -165,7 +167,8 @@ def ucs(grid, start, goal):
                     "path_cost": new_cost
                 }
 
-                heapq.heappush(pq, (new_cost, successor, child_node))
+                insertion_cost += 1
+                heapq.heappush(pq, (new_cost, insertion_order, child_node))
         
     return None
 
