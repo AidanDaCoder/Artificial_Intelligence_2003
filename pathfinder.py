@@ -167,9 +167,9 @@ def ucs(grid, start, goal):
                     "path_cost": new_cost
                 }
 
-                insertion_order += 1
                 heapq.heappush(pq, (new_cost, insertion_order, child_node))
-        
+                insertion_order += 1
+
     return None
 
 
