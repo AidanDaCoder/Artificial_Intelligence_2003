@@ -100,14 +100,45 @@ def make_path(goal_node):
     path.reverse()
     return path
 
-# if __name__ == "__main__":
-#     rows, cols, start, goal, grid = parse_map("test_map.txt")
+def print_path(grid, path):
+    temp_grid = []
 
-#     goal_node = bfs(grid, start, goal)
+    for row in grid:
+        temp_grid.append(row.copy())
 
-#     if goal_node is None:
-#         print("No path found")
-#     else:
-#         path = reconstruct_path(goal_node)
-#         print("Path found:")
-#         print(path)
+    for r, c in path:
+        temp_grid[r][c] = "*"
+
+    for row in temp_grid:
+        print(" ".join(str(cell) for cell in row))
+
+if __name__ == "__main__":
+    import sys
+
+    mode = sys.argv[1]
+    map_file = sys.argv[2]
+    algorithm = sys.argv[3]
+    heuristic = sys.argv[4]
+
+    rows, cols, start, goal, grid = parse_map(map_file)
+    
+    goal_node = None
+
+    if algorithm == "bfs":
+        goal_node = bfs(grid, start, goal)
+    else:
+        goal_node = None
+    
+    if goal_node is None:
+        print("null")
+    else:
+        path = make_path(goal_node)
+        print_path(grid, path)
+
+
+
+
+
+
+
+
