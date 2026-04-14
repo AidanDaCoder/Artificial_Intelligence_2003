@@ -118,7 +118,7 @@ if __name__ == "__main__":
     mode = sys.argv[1]
     map_file = sys.argv[2]
     algorithm = sys.argv[3]
-    heuristic = sys.argv[4]
+    # heuristic = sys.argv[4]
 
     rows, cols, start, goal, grid = parse_map(map_file)
     
