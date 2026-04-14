@@ -141,7 +141,7 @@ def ucs(grid, start, goal):
     best_cost[start] = 0
 
     while pq:
-        current_cost, insertion_order, current_node = heapq.heappop(pq) #removes lowest cost node
+        current_cost, _, current_node = heapq.heappop(pq) #removes lowest cost node
         current_state = current_node["state"]
 
         if current_cost > best_cost[current_state]:
