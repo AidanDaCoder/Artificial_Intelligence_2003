@@ -126,7 +126,7 @@ def step_cost(grid, current, successor):
 
 def ucs(grid, start, goal):
     pq = [] #priority queue 
-    visited = set()
+    #visited = set()
     best_cost = {}
 
     start_node = {
@@ -142,14 +142,17 @@ def ucs(grid, start, goal):
     while pq:
         current_cost, current_state, current_node = heapq.heappop(pq) #removes lowest cost node
         
-        #skip if node is already visited
-        if current_state in visited:
+        if current_cost > best_cost[current_state]:
             continue
+
+        #skip if node is already visited
+        # if current_state in visited:
+        #     continue
 
         if current_state == goal:
             return current_node
 
-        visited.add(current_state)
+        # visited.add(current_state)
 
         for successor in get_successors(current_state, grid):
             new_cost = current_node["path_cost"] + step_cost(grid, current_state, successor)
@@ -191,11 +194,5 @@ if __name__ == "__main__":
     else:
         path = make_path(goal_node)
         print_path(grid, path)
-
-
-
-
-
-
 
 
