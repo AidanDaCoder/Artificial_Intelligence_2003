@@ -1,4 +1,5 @@
 import heapq
+import math
 
 def parse_map(file_path):
     with open(file_path, 'r') as f:
@@ -172,6 +173,73 @@ def ucs(grid, start, goal):
 
     return None
 
+def euclidean(current, goal):
+    x1, y1 = current
+    x2, y2 = goal
+    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+
+def manhattan(current, goal):
+    x1, y1 = current
+    x2, y2 = goal
+    return abs(x2 - x1) + abs(y2 - y1)
+
+def astar(grid, start, goal, heuristic_str):
+    pq = [] #priority queue
+    best_cost = {}
+    insertion_order = 0
+
+    if heuristic_str == "manhattan":
+        heuristic = manhattan
+    elif heuristic_str == "euclidean":
+        heuristic = euclidean
+    else:
+        return None
+    
+    start_node = {
+        "state": start,
+        "parent": None,
+        "path_cost": 0
+    }
+
+    start_priority = heuristic(start, goal)
+
+    #push starting node into pq
+    heapq.heappush(pq, (start_priority, insertion_order, start_node))
+    best_cost[start] = 0
+    insertion_order += 1
+
+    while pq:
+        current_priority, _, current_node = heapq.heappop(pq)
+        current_state = current_node["state"]
+
+        if current_node["path_cost"] > best_cost[current_state]:
+            continue
+
+        if current_state == goal:
+            return current_node
+        
+        #loop works by exploring nodes in order of lowest total cost
+        for successor in get_successors(current_state, grid):
+            new_cost = current_node["path_cost"] + step_cost(grid, current_state, successor)
+
+            if successor not in best_cost or new_cost < best_cost[successor]:
+                best_cost[successor] = new_cost
+
+                child_node = {
+                    "state": successor,
+                    "parent": current_node,
+                    "path_cost": new_cost
+                }
+
+                total_cost = new_cost + heuristic(successor, goal)
+
+                #push into pq using insertion_order
+                heapq.heappush(pq, (total_cost, insertion_order, child_node))
+                insertion_order += 1
+
+    return None
+
+
 
 if __name__ == "__main__":
     import sys
@@ -179,7 +247,7 @@ if __name__ == "__main__":
     mode = sys.argv[1]
     map_file = sys.argv[2]
     algorithm = sys.argv[3]
-    # heuristic = sys.argv[4]
+    heuristic = sys.argv[4] if len(sys.argv) > 4 else None #cos gradescope breaks
 
     rows, cols, start, goal, grid = parse_map(map_file)
     
@@ -189,6 +257,8 @@ if __name__ == "__main__":
         goal_node = bfs(grid, start, goal)
     elif algorithm == "ucs":
         goal_node = ucs(grid, start, goal)
+    elif algorithm == "astar":
+        goal_node = astar(grid, start, goal, heuristic)
     else:
         goal_node = None
     
